@@ -80,7 +80,7 @@ if (isset($_GET['element'])) {
   <script type="text/javascript" src="index.php?element=jquery"></script>
   <script type="text/javascript">
     $(function() {
-/*
+
       var request = $.ajax({
         method: "POST",
         url: "index.php",
@@ -103,7 +103,7 @@ if (isset($_GET['element'])) {
         $('#error').html('An error has occured');
         $('.spinner').remove();
       });
-*/
+
     });
   </script>
 </body>
