@@ -2,7 +2,7 @@
 
 set_time_limit(0);
 
-define('ZIP_NAME', 'package.zip');
+define('ZIP_NAME', 'prestashop.zip');
 define('TARGET_FOLDER', __DIR__.'/');
 
 if (isset($_POST['extract'])) {
