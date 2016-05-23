@@ -27,6 +27,10 @@ if (isset($_POST['extract'])) {
       }
     }
 
+    if ($lastId >= $numFiles) {
+      $fileList[] = 'index.php';
+    }
+
     if (!$zip->extractTo(TARGET_FOLDER, $fileList)) {
       die(json_encode([
         'error' => true,
@@ -38,6 +42,7 @@ if (isset($_POST['extract'])) {
       'error' => false,
       'numFiles' => $numFiles,
       'lastId' => $lastId,
+      'files' => $fileList,
     ]));
   }
 }
