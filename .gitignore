@@ -1,0 +1,7 @@
+*
+
+!.gitignore
+!index_template.php
+!compile.php
+
+!content/*
