@@ -8,7 +8,7 @@ define('TARGET_FOLDER', __DIR__.'/');
 if (isset($_POST['extract'])) {
 
   $zip = new ZipArchive();
-  $zip->open('package.zip');
+  $zip->open(__DIR__.'/'.ZIP_NAME);
   if (!$zip->extractTo(TARGET_FOLDER)) {
     die(json_encode([
       'error' => true,
