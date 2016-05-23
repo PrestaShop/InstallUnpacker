@@ -3,7 +3,7 @@
 set_time_limit(0);
 
 define('ZIP_NAME', 'prestashop.zip');
-define('TARGET_FOLDER', __DIR__.'/temp/');
+define('TARGET_FOLDER', __DIR__.'/');
 define('BATCH_SIZE', 500);
 
 $startId = 0;
@@ -20,7 +20,7 @@ if (isset($_POST['extract'])) {
     $lastId = $startId + BATCH_SIZE;
 
     $fileList = array();
-    for ($id = $startId; $id < $lastId; $id++) {
+    for ($id = $startId; $id < min($numFiles, $lastId); $id++) {
       $currentFile = $zip->getNameIndex($id);
       if ($currentFile !== 'index.php') {
         $fileList[] = $currentFile;
