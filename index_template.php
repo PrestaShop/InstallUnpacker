@@ -3,22 +3,43 @@
 set_time_limit(0);
 
 define('ZIP_NAME', 'prestashop.zip');
-define('TARGET_FOLDER', __DIR__.'/');
+define('TARGET_FOLDER', __DIR__.'/temp/');
+define('BATCH_SIZE', 500);
+
+$startId = 0;
+if (isset($_POST['startId'])) {
+  $startId = (int)$_POST['startId'];
+}
 
 if (isset($_POST['extract'])) {
 
   $zip = new ZipArchive();
-  $zip->open(__DIR__.'/'.ZIP_NAME);
-  if (!$zip->extractTo(TARGET_FOLDER)) {
+  if ($zip->open(__DIR__.'/'.ZIP_NAME) === true) {
+
+    $numFiles = $zip->numFiles;
+    $lastId = $startId + BATCH_SIZE;
+
+    $fileList = array();
+    for ($id = $startId; $id < $lastId; $id++) {
+      $currentFile = $zip->getNameIndex($id);
+      if ($currentFile !== 'index.php') {
+        $fileList[] = $currentFile;
+      }
+    }
+
+    if (!$zip->extractTo(TARGET_FOLDER, $fileList)) {
+      die(json_encode([
+        'error' => true,
+        'message' => 'An error occured during the extraction',
+      ]));
+    }
+
     die(json_encode([
-      'error' => true,
-      'message' => 'An error occured during the extraction',
+      'error' => false,
+      'numFiles' => $numFiles,
+      'lastId' => $lastId,
     ]));
   }
-
-  die(json_encode([
-    'error' => false,
-  ]));
 }
 
 if (isset($_GET['element'])) {
@@ -80,27 +101,47 @@ if (isset($_GET['element'])) {
         <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/>
       </svg>
 
+      <div id="progress">
+        <div class="current"></div>
+      </div>
+
       <div id="error"></div>
     </div>
   </div>
   <script type="text/javascript" src="index.php?element=jquery"></script>
   <script type="text/javascript">
-    $(function() {
+
+    function extractFiles(startId) {
+
+      if (typeof startId == 'undefined') {
+        fromId = 0;
+      }
+
       var request = $.ajax({
         method: "POST",
         url: "index.php",
         data: {
           extract: true,
+          startId: startId,
         },
         dataType: 'json'
       });
 
       request.done(function(msg) {
-        if (msg.fail) {
+        if (
+          msg.fail
+          || typeof msg.lastId == 'undefined'
+          || typeof msg.numFiles == 'undefined'
+        ) {
           $('#error').html('An error has occured : <br />'+msg.message);
           $('.spinner').remove();
         } else {
-          location.reload();
+          if (msg.lastId > msg.numFiles) {
+            location.reload();
+          } else {
+            $("#progress").find(".current").width((msg.lastId / msg.numFiles * 100)+'%');
+            extractFiles(msg.lastId);
+          }
         }
       });
 
@@ -108,6 +149,10 @@ if (isset($_GET['element'])) {
         $('#error').html('An error has occured');
         $('.spinner').remove();
       });
+    }
+
+    $(function() {
+      extractFiles();
     });
   </script>
 </body>
