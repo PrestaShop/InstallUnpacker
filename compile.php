@@ -1,6 +1,6 @@
 <?php
 
-$template = file_get_contents('index_template.php');
+$template = file_get_contents(__DIR__.'/index_template.php');
 
 if ($handle = opendir(__DIR__.'/content')) {
   while (false !== ($entry = readdir($handle))) {
@@ -21,4 +21,4 @@ if ($handle = opendir(__DIR__.'/content')) {
   }
 }
 
-file_put_contents('index.php', $template);
+file_put_contents(getcwd().'/index.php', $template);
