@@ -22,13 +22,13 @@ if (isset($_POST['extract'])) {
     $fileList = array();
     for ($id = $startId; $id < min($numFiles, $lastId); $id++) {
       $currentFile = $zip->getNameIndex($id);
-      if ($currentFile !== 'index.php') {
+      if ($currentFile !== '/index.php') {
         $fileList[] = $currentFile;
       }
     }
 
     if ($lastId >= $numFiles) {
-      $fileList[] = 'index.php';
+      $fileList[] = '/index.php';
     }
 
     foreach ($fileList as $currentFile) {
