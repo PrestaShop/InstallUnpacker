@@ -31,16 +31,18 @@ if (isset($_POST['extract'])) {
       $fileList[] = 'index.php';
     }
 
-    if (!$zip->extractTo(TARGET_FOLDER, $fileList)) {
-      die(json_encode([
-        'error' => true,
-        'message' => 'An error occured during the extraction',
-        'file' => $currentFile,
-        'status' => $zip->getStatusString(),
-        'numFiles' => $numFiles,
-        'lastId' => $lastId,
-        'files' => $fileList,
-      ]));
+    foreach ($fileList as $currentFile) {
+      if ($zip->extractTo(TARGET_FOLDER, $currentFile) === false) {
+        die(json_encode([
+          'error' => true,
+          'message' => 'An error occured during the extraction',
+          'file' => $currentFile,
+          'status' => $zip->getStatusString(),
+          'numFiles' => $numFiles,
+          'lastId' => $lastId,
+          'files' => $fileList,
+        ]));
+      }
     }
 
     die(json_encode([
