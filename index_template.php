@@ -45,6 +45,8 @@ if (isset($_POST['extract'])) {
       }
     }
 
+    $zip->close();
+
     die(json_encode([
       'error' => false,
       'numFiles' => $numFiles,
