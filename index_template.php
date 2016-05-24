@@ -48,6 +48,7 @@ if (isset($_POST['extract'])) {
 
     if ($lastId >= $numFiles) {
       unlink(getcwd().'/index.php');
+      unlink(getcwd().'/prestashop.zip');
       rename(getcwd().'/index.php.temp', getcwd().'/index.php');
     }
 
