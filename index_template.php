@@ -35,6 +35,11 @@ if (isset($_POST['extract'])) {
       die(json_encode([
         'error' => true,
         'message' => 'An error occured during the extraction',
+        'file' => $currentFile,
+        'status' => $zip->getStatusString(),
+        'numFiles' => $numFiles,
+        'lastId' => $lastId,
+        'files' => $fileList,
       ]));
     }
 
