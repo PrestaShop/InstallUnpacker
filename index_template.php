@@ -46,6 +46,11 @@ if (isset($_POST['extract'])) {
 
     $zip->close();
 
+    if ($lastId >= $numFiles) {
+      unlink(getcwd().'/index.php');
+      rename(getcwd().'/index.php.temp', getcwd().'/index.php');
+    }
+
     die(json_encode([
       'error' => false,
       'numFiles' => $numFiles,
