@@ -47,7 +47,6 @@ if (isset($_POST['extract'])) {
       'error' => false,
       'numFiles' => $numFiles,
       'lastId' => $lastId,
-      'files' => $fileList,
     ]));
   }
 }
