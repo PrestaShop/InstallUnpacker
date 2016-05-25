@@ -1,5 +1,4 @@
 <?php
-
 set_time_limit(0);
 
 define('ZIP_NAME', 'prestashop.zip');
@@ -22,7 +21,7 @@ if (isset($_POST['extract'])) {
     $fileList = array();
     for ($id = $startId; $id < min($numFiles, $lastId); $id++) {
       $currentFile = $zip->getNameIndex($id);
-      if ($currentFile === '/index.php' || $currentFile == 'index.php') {
+      if (in_array($currentFile, ['/index.php', 'index.php'])) {
         $indexContent = $zip->getFromIndex($id);
         file_put_contents(getcwd().'/index.php.temp', $indexContent);
       } else {
@@ -50,7 +49,9 @@ if (isset($_POST['extract'])) {
       unlink(getcwd().'/index.php');
       unlink(getcwd().'/prestashop.zip');
       rename(getcwd().'/index.php.temp', getcwd().'/index.php');
+      sleep(2); // we need to wait the rename creation as the ajax call is asynchronous
     }
+
 
     die(json_encode([
       'error' => false,
@@ -132,7 +133,7 @@ if (isset($_GET['element'])) {
     function extractFiles(startId) {
 
       if (typeof startId == 'undefined') {
-        fromId = 0;
+        startId = 0;
       }
 
       var request = $.ajax({
@@ -141,17 +142,17 @@ if (isset($_GET['element'])) {
         data: {
           extract: true,
           startId: startId,
-        },
-        dataType: 'json'
+        }
       });
 
       request.done(function(msg) {
+        msg = JSON.parse(msg);
         if (
           msg.fail
           || typeof msg.lastId == 'undefined'
           || typeof msg.numFiles == 'undefined'
         ) {
-          $('#error').html('An error has occured : <br />'+msg.message);
+          $('#error').html('An error has occured : <br />'+ msg.message);
           $('.spinner').remove();
         } else {
           if (msg.lastId > msg.numFiles) {
@@ -163,8 +164,8 @@ if (isset($_GET['element'])) {
         }
       });
 
-      request.fail(function() {
-        $('#error').html('An error has occured');
+      request.fail(function(jqXHR, textStatus, errorThrown) {
+        $('#error').html('An error has occured' + textStatus);
         $('.spinner').remove();
       });
     }
