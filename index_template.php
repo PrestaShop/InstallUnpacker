@@ -52,7 +52,6 @@ if (isset($_POST['extract'])) {
       sleep(2); // we need to wait the rename creation as the ajax call is asynchronous
     }
 
-
     die(json_encode([
       'error' => false,
       'numFiles' => $numFiles,
@@ -78,6 +77,9 @@ if (isset($_GET['element'])) {
     case 'logo':
       header('Content-Type: image/png');
       echo base64_decode('logo.png');
+    case 'gif':
+      header('Content-Type: image/png');
+      echo base64_decode('UnziperGif.png');
     break;
   }
   exit;
@@ -92,36 +94,17 @@ if (isset($_GET['element'])) {
   <link rel="stylesheet" type="text/css" href="index.php?element=css">
 </head>
 <body>
-  <img src="index.php?element=logo" style="width: 400px;" />
+  <img id="logo" src="index.php?element=logo" style="width: 200px;" />
   <div id="content">
     <div>
-      <svg fill="#DF0067" height="96" viewBox="0 0 24 24" width="96" style="display:inline-block;" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0h24v24H0z" fill="none"/>
-          <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
-      </svg>
+      <img src="index.php?element=gif" style="width: 480px;" />
 
-      <div class="spinner">
-        <svg class="bounce1" fill="#251B5B" height="64" viewBox="0 0 24 24" width="64" style="display:inline-block; margin-bottom:16px" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-        </svg>
-        <svg class="bounce2" fill="#251B5B" height="64" viewBox="0 0 24 24" width="64" style="display:inline-block; margin-bottom:16px" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-        </svg>
-        <svg class="bounce3" fill="#251B5B" height="64" viewBox="0 0 24 24" width="64" style="display:inline-block; margin-bottom:16px" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-        </svg>
-      </div>
-
-      <svg fill="#DF0067" height="96" viewBox="0 0 24 24" width="96" style="display:inline-block;" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 0h24v24H0z" fill="none"/>
-        <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/>
-      </svg>
-
-      <div id="progress">
-        <div class="current"></div>
+      <div id="progressContainer">
+        <div class="progressNumber">0 %</div>
+        <div class="progress">
+          <div class="current">
+          </div>
+        </div>
       </div>
 
       <div id="error"></div>
@@ -158,7 +141,15 @@ if (isset($_GET['element'])) {
           if (msg.lastId > msg.numFiles) {
             location.reload();
           } else {
-            $("#progress").find(".current").width((msg.lastId / msg.numFiles * 100)+'%');
+            $("#progressContainer")
+              .find(".current")
+              .width((msg.lastId / msg.numFiles * 100)+'%');
+
+            $("#progressContainer")
+              .find(".progressNumber")
+              .css({left: Math.round((msg.lastId / msg.numFiles * 100))+'%'})
+              .html(Math.round((msg.lastId / msg.numFiles * 100))+'%');
+
             extractFiles(msg.lastId);
           }
         }
