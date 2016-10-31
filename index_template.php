@@ -11,6 +11,12 @@ if (isset($_POST['startId'])) {
 }
 
 if (isset($_POST['extract'])) {
+  if (!extension_loaded('zip')) {
+    die(json_encode([
+      'error' => true,
+      'message' => 'You must install PHP zip extension first',
+    ]));
+  }
 
   $zip = new ZipArchive();
   if ($zip->open(__DIR__.'/'.ZIP_NAME) === true) {
