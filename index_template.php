@@ -135,7 +135,14 @@ if (isset($_GET['element'])) {
       });
 
       request.done(function(msg) {
-        msg = JSON.parse(msg);
+        try {
+          msg = JSON.parse(msg);
+        }catch(e){
+          msg = {
+            message: msg
+          };
+        }
+
         if (
           msg.fail
           || typeof msg.lastId == 'undefined'
