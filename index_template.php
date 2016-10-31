@@ -11,6 +11,12 @@ if (isset($_POST['startId'])) {
 }
 
 if (isset($_POST['extract'])) {
+  if (!extension_loaded('zip')) {
+    die(json_encode([
+      'error' => true,
+      'message' => 'You must install PHP zip extension first',
+    ]));
+  }
 
   $zip = new ZipArchive();
   if ($zip->open(__DIR__.'/'.ZIP_NAME) === true) {
@@ -129,7 +135,14 @@ if (isset($_GET['element'])) {
       });
 
       request.done(function(msg) {
-        msg = JSON.parse(msg);
+        try {
+          msg = JSON.parse(msg);
+        }catch(e){
+          msg = {
+            message: msg
+          };
+        }
+
         if (
           msg.fail
           || typeof msg.lastId == 'undefined'
