@@ -86,12 +86,9 @@ if (isset($_GET['element'])) {
       header('Content-Type: text/javascript');
       echo base64_decode('jquery-2.2.3.min.js');
       break;
-    case 'logo':
-      header('Content-Type: image/png');
-      echo base64_decode('logo.png');
     case 'gif':
-      header('Content-Type: image/png');
-      echo base64_decode('UnziperGif.png');
+      header('Content-Type: image/gif');
+      echo base64_decode('installer.gif');
     break;
   }
   exit;
@@ -106,11 +103,9 @@ if (isset($_GET['element'])) {
   <link rel="stylesheet" type="text/css" href="index.php?element=css">
 </head>
 <body>
-  <img id="logo" src="index.php?element=logo" style="width: 200px;" />
   <div id="content">
     <div>
-      <img src="index.php?element=gif" style="width: 480px;" />
-
+      <img src="index.php?element=gif" />
       <div id="progressContainer">
         <div class="progressNumber">0 %</div>
         <div class="progress">
@@ -118,7 +113,6 @@ if (isset($_GET['element'])) {
           </div>
         </div>
       </div>
-
       <div id="error"></div>
     </div>
   </div>
